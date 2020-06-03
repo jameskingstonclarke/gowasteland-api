@@ -1,37 +1,40 @@
-## Welcome to GitHub Pages
+# The gowasteland API
 
-You can use the [editor on GitHub](https://github.com/jameskingstonclarke/gowasteland-api/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
+GoWasteland uses Lua for its scripting environment. The API outlines how to work with the game itself, cells, entities and most importantly, mods. Game behaviour is encapsulated within mods, each mod registered contains cells, entities and environment definitions.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+# File structure
+Any code within scripts/config/setup.lua will be executed on startup, meaning you will most likely have to place some code in here.
 
-### Markdown
+# Mods
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+To get started, first register a new mod, be sure to choose a suitable name, description and a version number.
 
-```markdown
-Syntax highlighted code block
+    game:registerMod({  
+	    id = "default",  
+	    description = "the default behaviour of gowasteland",  
+	    version = "0.0.1"  
+    })
 
-# Header 1
-## Header 2
-### Header 3
+After registering your mod, any ID you use will need to register the mod it belongs to e.g. **goblin:default**
 
-- Bulleted
-- List
+To view the active mods in the game, access the games mods table from anywhere in your Lua code
 
-1. Numbered
-2. List
+    print(game:mods())
 
-**Bold** and _Italic_ and `Code` text
+# Environments
 
-[Link](url) and ![Image](src)
-```
+Once you have registered a mod, you may want to create some custom environments. Just like with mods, environments need registering (Remember, IDs must specify the mod that you want your behaviour to be linked to).
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+    game:registerEnv({  
+	    id = "default:wasteland",  
+	    behaviour = "scripts/world/environments/wasteland.lua"  
+	})
 
-### Jekyll Themes
+The behaviour is the location of the script you wish to define the environment behaviour in. In this example we create a file called wasteland.lua (this file can be named anything and located in any directory accessible by the game).
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/jameskingstonclarke/gowasteland-api/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+## Spawning Entities
+When spawning entities you first specity the ID of the entity, then the tag, then the position. The tag can be anything, it is used to uniquely identify a particular entity in the game.
 
-### Support or Contact
+    environment:spawnEntity("default:player", "player", Vec.new(0,0))
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+
